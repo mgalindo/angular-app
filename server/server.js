@@ -14,6 +14,8 @@ var xsrf = require('./lib/xsrf');
 var protectJSON = require('./lib/protectJSON');
 require('express-namespace');
 
+console.log('MG Angular App Server - listening on port: ' + config.server.listenPort);
+
 var app = express();
 var secureServer = https.createServer(credentials, app);
 var server = http.createServer(app);
@@ -67,10 +69,13 @@ require('./lib/routes/appFile').addRoutes(app, config);
 app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
 // Start up the server on the port specified in the config
-server.listen(config.server.listenPort, '0.0.0.0', 511, function() {
+server.listen(config.server.listenPort, config.server.ipAddress, 511, function() {
+  
+  console.log('Server in : ' + 'http://'+config.server.ipAddress+':' + config.server.listenPort + '/');
+  
   // // Once the server is listening we automatically open up a browser
   var open = require('open');
-  open('http://localhost:' + config.server.listenPort + '/');
+  open('http://'+config.server.ipAddress+':' + config.server.listenPort + '/');
 });
 console.log('Angular App Server - listening on port: ' + config.server.listenPort);
 secureServer.listen(config.server.securePort);
